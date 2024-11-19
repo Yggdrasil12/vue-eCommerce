@@ -1,45 +1,45 @@
 <template>
   <div class="edit-product-container">
-    <h2 class="text-center text-light mb-4">Editar Producto</h2>
+    <h2 class="text-center text-light mb-5">Editar Producto</h2>
     <form @submit.prevent="updateProduct">
-      <div class="mb-3">
+      <div class="mb-4">
         <label for="productName" class="form-label text-light">Nombre del Producto</label>
         <input
           type="text"
           id="productName"
           v-model="product.name"
-          class="form-control"
+          class="form-control form-control-lg"
           placeholder="Ingrese el nombre del producto"
           required
         />
       </div>
-      <div class="mb-3">
+      <div class="mb-4">
         <label for="productPrice" class="form-label text-light">Precio</label>
         <input
           type="number"
           id="productPrice"
           v-model="product.price"
-          class="form-control"
+          class="form-control form-control-lg"
           placeholder="Ingrese el precio del producto"
           step="0.01"
           required
         />
       </div>
-      <div class="mb-3">
+      <div class="mb-4">
         <label for="productDescription" class="form-label text-light">Descripción</label>
         <textarea
           id="productDescription"
           v-model="product.description"
-          class="form-control"
+          class="form-control form-control-lg"
           placeholder="Ingrese la descripción del producto"
-          rows="3"
+          rows="5"
           required
         ></textarea>
       </div>
-      <button type="submit" class="btn btn-success w-100">Guardar Cambios</button>
-      <button type="button" class="btn btn-outline-light w-100 mt-2" @click="goBack">
-        Cancelar
-      </button>
+      <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-success w-48">Guardar Cambios</button>
+        <button type="button" class="btn btn-outline-light w-48" @click="goBack">Cancelar</button>
+      </div>
     </form>
   </div>
 </template>
@@ -105,32 +105,85 @@ export default {
 .edit-product-container {
   padding: 40px;
   background: linear-gradient(135deg, #6a0dad, #000); /* Fondo morado */
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  max-width: 650px;
+  margin: 50px auto;
+  font-family: 'Arial', sans-serif;
+}
+
+h2 {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 700;
+  font-size: 1.8rem;
+}
+
+.form-label {
+  font-weight: 600;
+}
+
+.form-control {
   border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-  max-width: 600px;
-  margin: 40px auto;
+  padding: 1rem;
+  font-size: 1.1rem;
 }
 
-form .form-label {
-  font-weight: bold;
+.form-control-lg {
+  height: 50px;
 }
 
-form .btn-success {
+textarea.form-control-lg {
+  resize: vertical;
+}
+
+.form-control:focus {
+  box-shadow: 0 0 8px rgba(105, 0, 255, 0.8);
+  border-color: #6a0dad;
+}
+
+.btn-success {
   background-color: #28a745;
   border: none;
-  transition: background-color 0.3s ease;
+  font-size: 1.2rem;
+  transition: all 0.3s ease-in-out;
 }
 
-form .btn-success:hover {
+.btn-success:hover {
   background-color: #218838;
 }
 
-form .btn-outline-light {
-  border: 1px solid #fff;
+.btn-outline-light {
+  border: 2px solid #fff;
   color: #fff;
+  font-size: 1.2rem;
+  transition: all 0.3s ease-in-out;
 }
 
-form .btn-outline-light:hover {
+.btn-outline-light:hover {
   background-color: #444;
+}
+
+.d-flex {
+  gap: 10px;
+}
+
+.w-48 {
+  width: 48%;
+}
+
+@media (max-width: 768px) {
+  .edit-product-container {
+    padding: 30px;
+    max-width: 100%;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .btn-success,
+  .btn-outline-light {
+    font-size: 1rem;
+  }
 }
 </style>

@@ -99,9 +99,29 @@ export default {
       this.$router.push({ name: 'edit-product', params: { id: productId } })
     },
     // Función para agregar al carrito
+    // addToCart(product) {
+    //   this.$emit('add-to-cart', product)
+    //   alert(`Producto ${product.name} agregado al carrito`)
+    // },
     addToCart(product) {
-      this.$emit('add-to-cart', product)
-      alert(`Producto ${product.name} agregado al carrito`)
+      // Obtener los productos existentes del Local Storage
+      let cart = JSON.parse(localStorage.getItem('cart')) || []
+
+      // Verificar si el producto ya está en el carrito
+      const existingProduct = cart.find((item) => item.id === product.id)
+      if (existingProduct) {
+        alert(`El producto "${product.name}" ya está en el carrito.`)
+        return
+      }
+
+      // Agregar el nuevo producto
+      cart.push(product)
+
+      // Guardar el carrito actualizado en el Local Storage
+      localStorage.setItem('cart', JSON.stringify(cart))
+
+      // Notificar al usuario
+      alert(`Producto "${product.name}" agregado al carrito.`)
     },
   },
 }
