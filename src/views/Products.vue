@@ -1,34 +1,58 @@
 <template>
-  <div class="products-table-container">
-    <h2 class="text-center text-light mb-4">Lista de Productos</h2>
-    <table class="table table-dark table-striped">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Nombre</th>
-          <th scope="col">Precio</th>
-          <th scope="col">Descripción</th>
-          <th scope="col">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(product, index) in products" :key="product.id">
-          <th scope="row">{{ index + 1 }}</th>
-          <td>{{ product.name }}</td>
-          <td>${{ product.price.toFixed(2) }}</td>
-          <td>{{ product.description }}</td>
-          <td>
-            <button class="btn btn-outline-light" @click="viewDetails(product.id)">
-              Ver Detalles
-            </button>
-          </td>
-        </tr>
-        <!-- Si no hay productos, mostramos un mensaje en lugar de filas vacías -->
-        <tr v-if="products.length === 0">
-          <td colspan="5" class="text-center text-light">No hay productos disponibles.</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="products-table-container">
+      <h2 class="text-center text-light mb-4">Lista de Productos</h2>
+      <table class="table table-dark table-striped">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Precio</th>
+            <th scope="col">Descripción</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(product, index) in products" :key="product.id">
+            <th scope="row">{{ index + 1 }}</th>
+            <td>{{ product.name }}</td>
+            <td>${{ product.price.toFixed(2) }}</td>
+            <td>{{ product.description }}</td>
+            <td>
+              <!-- Botones con íconos -->
+              <button class="btn btn-outline-light mx-2" @click="viewDetails(product.id)">
+                <i class="bi bi-eye"></i> <!-- Ícono de ojo -->
+              </button>
+              <button class="btn btn-outline-warning mx-2" @click="editProduct(product.id)">
+                <i class="bi bi-pencil"></i> <!-- Ícono de lápiz -->
+              </button>
+              <button class="btn btn-outline-success mx-2" @click="addToCart(product)">
+                <i class="bi bi-cart-plus"></i> <!-- Ícono de carrito -->
+              </button>
+            </td>
+          </tr>
+          <!-- Si no hay productos, mostramos un mensaje en lugar de filas vacías -->
+          <tr v-if="products.length === 0">
+            <td colspan="5" class="text-center text-light">No hay productos disponibles.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Modal para ver detalles -->
+  <div class="modal fade" id="viewDetailsModal" tabindex="-1" aria-labelledby="viewDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewDetailsModalLabel">Detalles del Producto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p><strong>Nombre:</strong> {{ selectedProduct?.name }}</p>
+          <p><strong>Precio:</strong> ${{ selectedProduct?.price.toFixed(2) }}</p>
+          <p><strong>Descripción:</strong> {{ selectedProduct?.description }}</p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -47,9 +71,7 @@ export default {
     // Llamada a la API para obtener los productos
     async fetchProducts() {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/get/products');
-        console.log(response);
-
+        const response = await fetch('http://127.0.0.1:8000/api/products');
         const data = await response.json();
         this.products = data;
       } catch (error) {
@@ -59,6 +81,15 @@ export default {
     // Función para manejar el clic en el botón "Ver Detalles"
     viewDetails(productId) {
       this.$router.push({ name: 'product-details', params: { id: productId } });
+    },
+    // Función para manejar el clic en el botón "Editar"
+    editProduct(productId) {
+      this.$router.push({ name: 'edit-product', params: { id: productId } });
+    },
+    // Función para agregar al carrito
+    addToCart(product) {
+      this.$emit('add-to-cart', product);
+      alert(`Producto ${product.name} agregado al carrito`);
     }
   }
 };
@@ -90,7 +121,9 @@ td {
   color: #ddd;
 }
 
-table .btn-outline-light {
+table .btn-outline-light,
+table .btn-outline-warning,
+table .btn-outline-success {
   color: #fff;
   border-color: #fff;
   transition: background-color 0.3s ease;
@@ -98,6 +131,14 @@ table .btn-outline-light {
 
 table .btn-outline-light:hover {
   background-color: #8a2be2;
+}
+
+table .btn-outline-warning:hover {
+  background-color: #ffcc00;
+}
+
+table .btn-outline-success:hover {
+  background-color: #28a745;
 }
 
 /* Estilo para las filas de la tabla */
@@ -117,4 +158,3 @@ table tbody tr td {
 }
 
 </style>
-

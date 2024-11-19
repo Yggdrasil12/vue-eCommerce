@@ -36,13 +36,39 @@ export default {
     };
   },
   methods: {
-    handleLogin() {
-      // Aquí puedes agregar la lógica de autenticación
-      console.log('Iniciando sesión con:', this.email, this.password);
-      // Redirigir a la página principal o dashboard
-      this.$router.push('/');
+    async handleLogin() {
+        const userData = {
+            email: this.email,
+            password: this.password,
+        };
+
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
+            });
+
+            // Verificar si la respuesta es exitosa
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Error al iniciar sesión');
+            }
+
+            const data = await response.json();
+            console.log('Inicio de sesión exitoso:', data);
+
+            // Aquí puedes redirigir a la página principal o dashboard
+            this.$router.push('/'); // Cambia '/dashboard' según tu ruta
+
+        } catch (error) {
+            console.error('Error al iniciar sesión:', error);
+            alert(error.message); // Muestra el mensaje de error al usuario
+        }
     }
-  }
+}
 };
 </script>
 
