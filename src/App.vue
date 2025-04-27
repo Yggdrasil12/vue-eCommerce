@@ -38,6 +38,7 @@ onBeforeUnmount(() => {
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
           <router-link class="navbar-brand text-light" to="/">Inicio</router-link>
+          <router-link class="navbar-brand text-light" to="/products">Productos</router-link>}
           <button
             class="navbar-toggler"
             type="button"

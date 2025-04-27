@@ -24,9 +24,9 @@
             <button class="btn btn-outline-light mx-2" @click="viewDetails(product)">
               <i class="bi bi-eye"></i>
             </button>
-            <button class="btn btn-outline-warning mx-2" @click="editProduct(product)">
+            <router-link :to="`/product/detail/${product.id}`" class="btn btn-outline-warning mx-2">
               <i class="bi bi-pencil"></i>
-            </button>
+            </router-link>
           </td>
         </tr>
         <tr v-if="products.length === 0">

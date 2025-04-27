@@ -29,9 +29,11 @@
       </div>
 
       <div class="text-center mt-4">
-        <router-link to="/profile/edit" class="btn btn-outline-light w-100">
+        <router-link to="/profile/edit" class="btn btn-outline-light w-100 mb-2">
           Editar Perfil
         </router-link>
+
+        <button class="btn btn-outline-danger w-100" @click="deleteProfile">Eliminar Perfil</button>
       </div>
     </div>
   </div>
@@ -59,11 +61,10 @@ export default {
       try {
         const email = localStorage.getItem('userEmail')
 
-        // Realizar la petición GET para obtener los datos del usuario
         const response = await fetch(`http://127.0.0.1:8000/api/users/${email}`, {
-          method: 'GET', // Utilizar GET para obtener los datos
+          method: 'GET',
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`, // Agregar el token para autenticación
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         })
 
@@ -75,6 +76,38 @@ export default {
         }
       } catch (error) {
         console.error('Error al obtener el usuario:', error)
+      }
+    },
+
+    async deleteProfile() {
+      if (
+        !confirm(
+          '¿Estás seguro de que quieres eliminar tu perfil? Esta acción no se puede deshacer.',
+        )
+      ) {
+        return
+      }
+
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/api/users/${this.user.email}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        })
+
+        if (response.ok) {
+          alert('Perfil eliminado correctamente')
+          localStorage.removeItem('token')
+          localStorage.removeItem('userEmail')
+          this.$router.push('/login') // Redirige al login u otra página
+        } else {
+          const data = await response.json()
+          console.error('Error al eliminar el perfil:', data)
+          alert('Error al eliminar el perfil')
+        }
+      } catch (error) {
+        console.error('Error al eliminar el perfil:', error)
       }
     },
   },
