@@ -32,8 +32,9 @@
         <router-link to="/profile/edit" class="btn btn-outline-light w-100 mb-2">
           Editar Perfil
         </router-link>
-
-        <button class="btn btn-outline-danger w-100" @click="deleteProfile">Eliminar Perfil</button>
+        <button class="btn btn-outline-danger text-white w-100" @click="deleteProfile">
+          Eliminar Perfil
+        </button>
       </div>
     </div>
   </div>

@@ -1,13 +1,25 @@
 <template>
   <div class="products-table-container">
     <h2 class="text-center text-light mb-4">Lista de Productos</h2>
+
+    <!-- Alerta de stock bajo en rojo -->
+    <div v-if="lowStockAlert" class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>Advertencia!</strong> Algunos productos tienen stock bajo (4 o menos unidades).
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+        @click="lowStockAlert = false"
+      ></button>
+    </div>
+
     <table class="table table-dark table-striped">
       <thead>
         <tr>
           <th scope="col">#</th>
           <th scope="col">Nombre</th>
           <th scope="col">Cantidad</th>
-          <!-- Cambiado -->
           <th scope="col">Descripción</th>
           <th scope="col">Acciones</th>
         </tr>
@@ -16,11 +28,13 @@
         <tr v-for="(product, index) in products" :key="product.id">
           <th scope="row">{{ index + 1 }}</th>
           <td>{{ product.name }}</td>
-          <td>{{ product.quantity }}</td>
-          <!-- Cambiado -->
+          <td>
+            <span :class="{ 'text-danger': product.quantity <= 4 }">
+              {{ product.quantity }}
+            </span>
+          </td>
           <td>{{ product.description }}</td>
           <td>
-            <!-- Botones con íconos -->
             <button class="btn btn-outline-light mx-2" @click="viewDetails(product)">
               <i class="bi bi-eye"></i>
             </button>
@@ -57,7 +71,6 @@
           <div class="modal-body">
             <p><strong>Nombre:</strong> {{ selectedProduct?.name }}</p>
             <p><strong>Cantidad:</strong> {{ selectedProduct?.quantity }}</p>
-            <!-- Cambiado -->
             <p><strong>Descripción:</strong> {{ selectedProduct?.description }}</p>
           </div>
         </div>
@@ -73,6 +86,7 @@ export default {
     return {
       products: [],
       selectedProduct: null,
+      lowStockAlert: false, // Estado para mostrar la alerta de stock bajo
     }
   },
   mounted() {
@@ -84,6 +98,9 @@ export default {
         const response = await fetch('http://127.0.0.1:8000/api/products')
         const data = await response.json()
         this.products = data
+
+        // Revisar si hay productos con stock bajo (4 o menos)
+        this.lowStockAlert = this.products.some((product) => product.quantity <= 4)
       } catch (error) {
         console.error('Error al obtener los productos:', error)
       }

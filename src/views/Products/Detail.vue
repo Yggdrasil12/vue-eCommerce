@@ -120,6 +120,9 @@ export default {
         this.product = updatedProduct
         this.isEditing = false
         alert('Producto actualizado correctamente.')
+
+        // Redirigir a la ruta /products después de guardar los cambios
+        this.$router.push('/products')
       } catch (error) {
         console.error('Error al guardar los cambios:', error)
         alert('Hubo un error al actualizar el producto.')
