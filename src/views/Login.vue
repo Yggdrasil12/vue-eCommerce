@@ -1,26 +1,115 @@
+<script setup>
+import { ref } from 'vue'
+import { useRouter, RouterLink } from 'vue-router'
+
+const router = useRouter()
+
+const email = ref('')
+const password = ref('')
+
+// Estado reactivo para saber si el usuario está autenticado
+const isAuthenticated = ref(
+  !!localStorage.getItem('userEmail') && !!localStorage.getItem('userRole'),
+)
+
+// Función para manejar login
+const handleLogin = async () => {
+  const userData = {
+    email: email.value,
+    password: password.value,
+  }
+
+  try {
+    const response = await fetch('http://127.0.0.1:8000/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || 'Error al iniciar sesión')
+    }
+
+    const data = await response.json()
+    console.log('Inicio de sesión exitoso:', data)
+
+    // Guardar datos en localStorage
+    localStorage.setItem('userEmail', email.value)
+    localStorage.setItem('userRole', data.user.role)
+
+    // Disparar evento para actualizar otros componentes
+    window.dispatchEvent(new Event('auth-change'))
+
+    // Redirigir según el rol
+    if (data.user.role === 'admin') {
+      router.push('/manage')
+    } else if (data.user.role === 'user') {
+      router.push('/products')
+    }
+  } catch (error) {
+    console.error('Error al iniciar sesión:', error)
+    alert(error.message)
+  }
+}
+
+// Función para manejar logout
+const handleLogout = () => {
+  localStorage.removeItem('userEmail')
+  localStorage.removeItem('userRole')
+  window.dispatchEvent(new Event('auth-change'))
+  router.push('/')
+}
+</script>
+
 <template>
   <div class="login-container">
     <div class="login-box">
       <h2 class="text-center text-light">Iniciar Sesión</h2>
-      <form @submit.prevent="handleLogin">
-        <!-- Campo de correo -->
+
+      <!-- Formulario de inicio de sesión -->
+      <form v-if="!isAuthenticated" @submit.prevent="handleLogin">
         <div class="form-group">
           <label for="email" class="text-light">Correo Electrónico</label>
-          <input type="email" id="email" class="form-control" v-model="email" required placeholder="Ingresa tu correo">
+          <input
+            type="email"
+            id="email"
+            class="form-control"
+            v-model="email"
+            required
+            placeholder="Ingresa tu correo"
+          />
         </div>
 
-        <!-- Campo de contraseña -->
         <div class="form-group">
           <label for="password" class="text-light">Contraseña</label>
-          <input type="password" id="password" class="form-control" v-model="password" required placeholder="Ingresa tu contraseña">
+          <input
+            type="password"
+            id="password"
+            class="form-control"
+            v-model="password"
+            required
+            placeholder="Ingresa tu contraseña"
+          />
         </div>
 
-        <!-- Botón de inicio de sesión -->
-        <button type="submit" class="btn btn-outline-light btn-block">Iniciar Sesión</button>
+        <button type="submit" class="btn btn-outline-light btn-block">
+          <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+        </button>
       </form>
 
-      <div class="text-center mt-3">
-        <router-link to="/signup" class="text-light">¿No tienes una cuenta? Regístrate</router-link>
+      <!-- Botón de cerrar sesión -->
+      <div v-else class="text-center mt-3">
+        <button @click="handleLogout" class="btn btn-outline-light btn-block">
+          <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+        </button>
+      </div>
+
+      <!-- Enlace de registro -->
+      <div class="text-center mt-3" v-if="!isAuthenticated">
+        <RouterLink to="/signup" class="text-light">¿No tienes una cuenta? Regístrate</RouterLink>
       </div>
     </div>
   </div>
@@ -29,47 +118,7 @@
 <script>
 export default {
   name: 'Login',
-  data() {
-    return {
-      email: '',
-      password: '',
-    };
-  },
-  methods: {
-    async handleLogin() {
-        const userData = {
-            email: this.email,
-            password: this.password,
-        };
-
-        try {
-            const response = await fetch('http://127.0.0.1:8000/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userData),
-            });
-
-            // Verificar si la respuesta es exitosa
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Error al iniciar sesión');
-            }
-
-            const data = await response.json();
-            console.log('Inicio de sesión exitoso:', data);
-
-            // Aquí puedes redirigir a la página principal o dashboard
-            this.$router.push('/'); // Cambia '/dashboard' según tu ruta
-
-        } catch (error) {
-            console.error('Error al iniciar sesión:', error);
-            alert(error.message); // Muestra el mensaje de error al usuario
-        }
-    }
 }
-};
 </script>
 
 <style scoped>

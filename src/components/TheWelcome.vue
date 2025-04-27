@@ -1,16 +1,3 @@
-<!-- <script setup>
-import WelcomeItem from './WelcomeItem.vue'
-import DocumentationIcon from './icons/IconDocumentation.vue'
-import ToolingIcon from './icons/IconTooling.vue'
-import EcosystemIcon from './icons/IconEcosystem.vue'
-import CommunityIcon from './icons/IconCommunity.vue'
-import SupportIcon from './icons/IconSupport.vue'
-
-// fetch('htt://loclahosat', {
-//   method: 'POST',
-// }).then((response) => response.json)
-</script> -->
-
 <template>
   <div class="container-fluid presentation">
     <div class="text-center d-flex flex-column justify-content-center align-items-center">
@@ -20,15 +7,18 @@ import SupportIcon from './icons/IconSupport.vue'
       </div>
 
       <!-- Título -->
-      <h1 class="display-4 mb-3 text-white animated fadeIn">¡Bienvenido a Nuestra Tienda!</h1>
+      <h1 class="display-4 mb-3 text-white animated fadeIn">¡Bienvenido a Nuestra Sistema!</h1>
 
       <!-- Descripción -->
       <p class="lead mb-4 text-light">
-        Explora los mejores productos y ofertas en nuestro e-commerce. ¡Haz tus compras ahora!
+        Realiza tu pedido de productos o gestionalos de la manera mas eficiente
       </p>
 
-      <!-- Botón de acción -->
-      <a href="#explorar" class="btn btn-custom animated bounceIn">Explorar Ahora</a>
+      <!-- Contenedor de botones con alineación horizontal -->
+      <div class="d-flex justify-content-center gap-3">
+        <router-link class="btn btn-custom animated bounceIn" to="/products">Explorar</router-link>
+        <router-link class="btn btn-custom animated bounceIn" to="/login">Gestionar</router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -36,7 +26,17 @@ import SupportIcon from './icons/IconSupport.vue'
 <script>
 export default {
   name: 'SplashScreen',
-};
+  mounted() {
+    // Verificar si el usuario ya está autenticado
+    const userEmail = localStorage.getItem('userEmail')
+    const userRole = localStorage.getItem('userRole')
+
+    // Si está autenticado, redirigir a la página de gestión
+    if (userEmail && userRole) {
+      this.$router.push('/manage')
+    }
+  },
+}
 </script>
 
 <style scoped>
@@ -81,6 +81,7 @@ p {
 .btn-custom:hover {
   background-color: #6a0dad;
   color: #ffffffcc;
+  transform: scale(1.05); /* Un pequeño efecto de escala */
 }
 
 .animated {

@@ -6,14 +6,17 @@
         <div class="mb-3">
           <label for="name" class="form-label text-light">Nombre</label>
           <input type="text" class="form-control" id="name" v-model="name" required />
+          <span v-if="errors.name" class="text-danger">{{ errors.name }}</span>
         </div>
         <div class="mb-3">
           <label for="email" class="form-label text-light">Correo Electrónico</label>
           <input type="email" class="form-control" id="email" v-model="email" required />
+          <span v-if="errors.email" class="text-danger">{{ errors.email }}</span>
         </div>
         <div class="mb-3">
           <label for="password" class="form-label text-light">Contraseña</label>
           <input type="password" class="form-control" id="password" v-model="password" required />
+          <span v-if="errors.password" class="text-danger">{{ errors.password }}</span>
         </div>
         <div class="mb-3">
           <label for="confirmPassword" class="form-label text-light">Confirmar Contraseña</label>
@@ -24,11 +27,15 @@
             v-model="confirmPassword"
             required
           />
+          <span v-if="errors.confirmPassword" class="text-danger">{{
+            errors.confirmPassword
+          }}</span>
         </div>
         <button type="submit" class="btn btn-outline-light w-100">Registrar</button>
       </form>
       <p class="text-center text-light mt-3">
-        ¿Ya tienes cuenta? <router-link to="/login" class="text-decoration-none">Inicia sesión</router-link>
+        ¿Ya tienes cuenta?
+        <router-link to="/login" class="text-decoration-none">Inicia sesión</router-link>
       </p>
     </div>
   </div>
@@ -43,47 +50,77 @@ export default {
       email: '',
       password: '',
       confirmPassword: '',
-    };
+      errors: {
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+      },
+    }
   },
   methods: {
-  async handleRegister() {
-    // Validación de contraseñas
-    if (this.password !== this.confirmPassword) {
-      alert('Las contraseñas no coinciden.');
-      return;
-    }
-
-    const userData = {
-      name: this.name,
-      email: this.email,
-      password: this.password,
-    };
-
-    try {
-      const response = await fetch('http://127.0.0.1:8000/api/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json', // Especificamos que estamos enviando JSON
-        },
-        body: JSON.stringify(userData), // Convertimos los datos a JSON
-      });
-
-      if (!response.ok) {
-        throw new Error('Error al registrar el usuario');
+    async handleRegister() {
+      // Reset errors
+      this.errors = {
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
       }
 
-      const data = await response.json();
-      console.log('Usuario registrado:', data);
+      // Validación de campos
+      if (!this.name) {
+        this.errors.name = 'El nombre es obligatorio.'
+      }
 
-      // Aquí puedes redirigir al login si el registro fue exitoso
-      this.$router.push('/login');
-    } catch (error) {
-      console.error('Error al registrar el usuario:', error);
-      alert('Hubo un error al registrar el usuario.');
-    }
+      const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
+      if (!emailPattern.test(this.email)) {
+        this.errors.email = 'Por favor, ingresa un correo electrónico válido.'
+      }
+
+      if (this.password !== this.confirmPassword) {
+        this.errors.password = 'Las contraseñas no coinciden.'
+        this.errors.confirmPassword = 'Las contraseñas no coinciden.'
+      } else if (this.password.length < 6) {
+        this.errors.password = 'La contraseña debe tener al menos 6 caracteres.'
+      }
+
+      // Si hay errores, no proceder
+      if (Object.values(this.errors).some((error) => error !== '')) {
+        return
+      }
+
+      const userData = {
+        name: this.name,
+        email: this.email,
+        password: this.password,
+      }
+
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(userData),
+        })
+
+        if (!response.ok) {
+          throw new Error('Error al registrar el usuario')
+        }
+
+        const data = await response.json()
+        console.log('Usuario registrado:', data)
+
+        // Redirigir al login si el registro fue exitoso
+        this.$router.push('/login')
+      } catch (error) {
+        console.error('Error al registrar el usuario:', error)
+        alert('Hubo un error al registrar el usuario.')
+      }
+    },
   },
 }
-};
 </script>
 
 <style scoped>
