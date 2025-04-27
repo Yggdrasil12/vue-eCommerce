@@ -24,14 +24,18 @@
           <th scope="row">{{ index + 1 }}</th>
           <td>{{ item.name }}</td>
           <td>
-            <input type="number" v-model="item.quantity" min="1" class="form-control" @change="updateCart(item)">
+            <input
+              type="number"
+              v-model="item.quantity"
+              min="1"
+              class="form-control"
+              @change="updateCart(item)"
+            />
           </td>
           <td>${{ item.price.toFixed(2) }}</td>
           <td>${{ (item.price * item.quantity).toFixed(2) }}</td>
           <td>
-            <button class="btn btn-outline-danger" @click="removeFromCart(item)">
-              Eliminar
-            </button>
+            <button class="btn btn-outline-danger" @click="removeFromCart(item)">Eliminar</button>
           </td>
         </tr>
       </tbody>
@@ -51,50 +55,57 @@ export default {
   name: 'Cart',
   data() {
     return {
-      cartItems: [], // Array para almacenar los productos del carrito
-    };
+      cartItems: [], // Productos del carrito
+    }
   },
   computed: {
     totalAmount() {
       // Calcula el total del carrito sumando los productos y sus cantidades
-      return this.cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+      return this.cartItems.reduce((total, item) => total + item.price * item.quantity, 0)
     },
   },
   methods: {
+    // Cargar productos del localStorage
+    loadCart() {
+      const storedCart = localStorage.getItem('cart')
+      if (storedCart) {
+        this.cartItems = JSON.parse(storedCart)
+      }
+    },
+
+    // Guardar el carrito actualizado en el localStorage
+    saveCart() {
+      localStorage.setItem('cart', JSON.stringify(this.cartItems))
+    },
+
     // Función para actualizar la cantidad de un producto en el carrito
-    updateCart(item) {
-      // Aquí podrías agregar lógica adicional para guardar la cantidad en una base de datos o localStorage
+    updateCart() {
+      this.saveCart() // Actualiza el almacenamiento local
     },
 
     // Función para eliminar un producto del carrito
     removeFromCart(item) {
-      const index = this.cartItems.indexOf(item);
-      if (index > -1) {
-        this.cartItems.splice(index, 1);
-      }
+      this.cartItems = this.cartItems.filter((cartItem) => cartItem.id !== item.id)
+      this.saveCart() // Actualiza el almacenamiento local
     },
 
     // Función para vaciar el carrito
     clearCart() {
-      this.cartItems = [];
+      this.cartItems = []
+      localStorage.removeItem('cart') // Limpia el localStorage
     },
 
-    // Función para proceder al pago (aquí solo simula la acción)
+    // Función para proceder al pago (simulación)
     checkout() {
-      alert('Procediendo al pago...');
-      // Aquí agregarías la lógica para realizar el pago (por ejemplo, redirigir a una página de pago)
+      alert('Procediendo al pago...')
+      // Aquí agregarías la lógica para realizar el pago
     },
   },
-
-  // Simulación de agregar productos al carrito
   mounted() {
-    // Ejemplo de productos que se pueden agregar al carrito
-    this.cartItems = [
-      { id: 1, name: 'Producto 1', price: 20.0, quantity: 1 },
-      { id: 2, name: 'Producto 2', price: 15.5, quantity: 2 },
-    ];
+    // Cargar productos almacenados al montar el componente
+    this.loadCart()
   },
-};
+}
 </script>
 
 <style scoped>
@@ -112,7 +123,8 @@ table {
   background-color: #222; /* Fondo oscuro para la tabla */
 }
 
-th, td {
+th,
+td {
   color: #fff;
 }
 
@@ -140,5 +152,4 @@ button {
   background-color: #8a2be2;
   color: #fff;
 }
-
 </style>
