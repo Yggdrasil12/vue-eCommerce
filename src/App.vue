@@ -50,19 +50,23 @@ onBeforeUnmount(() => {
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <router-link class="nav-link text-light" to="/products">Productos</router-link>
-              </li>
-            </ul>
-            <!-- Botón que cambia dependiendo si el usuario está autenticado -->
-            <div>
+            <div class="ms-auto d-flex align-items-center">
+              <!-- Botón de login o logout -->
               <router-link v-if="!isAuthenticated" to="/login">
                 <button class="btn btn-outline-light">Iniciar Sesión</button>
               </router-link>
-              <button v-else @click="handleLogout" class="btn btn-outline-light">
-                <i class="bi bi-box-arrow-right"></i>
-              </button>
+
+              <div v-else class="d-flex align-items-center">
+                <!-- Icono para editar el perfil -->
+                <router-link to="/profile" class="btn btn-outline-light me-2">
+                  <i class="bi bi-person"></i>
+                </router-link>
+
+                <!-- Botón de cerrar sesión -->
+                <button @click="handleLogout" class="btn btn-outline-light">
+                  <i class="bi bi-box-arrow-right"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -113,5 +117,9 @@ export default {
 /* Estilo del ícono dentro del botón */
 .btn-outline-light i {
   font-size: 1.5rem; /* Tamaño del ícono */
+}
+
+.me-2 {
+  margin-right: 0.5rem; /* Espacio entre los botones */
 }
 </style>

@@ -43,12 +43,7 @@ const handleLogin = async () => {
     // Disparar evento para actualizar otros componentes
     window.dispatchEvent(new Event('auth-change'))
 
-    // Redirigir según el rol
-    if (data.user.role === 'admin') {
-      router.push('/manage')
-    } else if (data.user.role === 'user') {
-      router.push('/products')
-    }
+    router.push('/products')
   } catch (error) {
     console.error('Error al iniciar sesión:', error)
     alert(error.message)
@@ -110,6 +105,13 @@ const handleLogout = () => {
       <!-- Enlace de registro -->
       <div class="text-center mt-3" v-if="!isAuthenticated">
         <RouterLink to="/signup" class="text-light">¿No tienes una cuenta? Regístrate</RouterLink>
+      </div>
+
+      <!-- Enlace para recuperación de contraseña -->
+      <div class="text-center mt-3" v-if="!isAuthenticated">
+        <RouterLink to="/password-recovery" class="text-light"
+          >¿Olvidaste tu contraseña?</RouterLink
+        >
       </div>
     </div>
   </div>

@@ -7,17 +7,18 @@
       </div>
 
       <!-- Título -->
-      <h1 class="display-4 mb-3 text-white animated fadeIn">¡Bienvenido a Nuestra Sistema!</h1>
+      <h1 class="display-4 mb-3 text-white animated fadeIn">
+        ¡Bienvenido a Nuestra Sistema de Gestión!
+      </h1>
 
       <!-- Descripción -->
-      <p class="lead mb-4 text-light">
-        Realiza tu pedido de productos o gestionalos de la manera mas eficiente
-      </p>
+      <p class="lead mb-4 text-light">Gestiona tus productos de la manera mas eficiente</p>
 
       <!-- Contenedor de botones con alineación horizontal -->
       <div class="d-flex justify-content-center gap-3">
-        <router-link class="btn btn-custom animated bounceIn" to="/products">Explorar</router-link>
-        <router-link class="btn btn-custom animated bounceIn" to="/login">Gestionar</router-link>
+        <router-link class="btn btn-custom animated bounceIn" to="/products"
+          >Gestionar productos</router-link
+        >
       </div>
     </div>
   </div>
@@ -30,11 +31,6 @@ export default {
     // Verificar si el usuario ya está autenticado
     const userEmail = localStorage.getItem('userEmail')
     const userRole = localStorage.getItem('userRole')
-
-    // Si está autenticado, redirigir a la página de gestión
-    if (userEmail && userRole) {
-      this.$router.push('/manage')
-    }
   },
 }
 </script>

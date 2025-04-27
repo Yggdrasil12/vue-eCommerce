@@ -3,21 +3,28 @@
     <div class="register-form-container">
       <h2 class="text-center text-light mb-4">Crea tu Cuenta</h2>
       <form @submit.prevent="handleRegister">
+        <!-- Nombre -->
         <div class="mb-3">
           <label for="name" class="form-label text-light">Nombre</label>
           <input type="text" class="form-control" id="name" v-model="name" required />
           <span v-if="errors.name" class="text-danger">{{ errors.name }}</span>
         </div>
+
+        <!-- Correo Electrónico -->
         <div class="mb-3">
           <label for="email" class="form-label text-light">Correo Electrónico</label>
           <input type="email" class="form-control" id="email" v-model="email" required />
           <span v-if="errors.email" class="text-danger">{{ errors.email }}</span>
         </div>
+
+        <!-- Contraseña -->
         <div class="mb-3">
           <label for="password" class="form-label text-light">Contraseña</label>
           <input type="password" class="form-control" id="password" v-model="password" required />
           <span v-if="errors.password" class="text-danger">{{ errors.password }}</span>
         </div>
+
+        <!-- Confirmar Contraseña -->
         <div class="mb-3">
           <label for="confirmPassword" class="form-label text-light">Confirmar Contraseña</label>
           <input
@@ -31,6 +38,21 @@
             errors.confirmPassword
           }}</span>
         </div>
+
+        <!-- Teléfono -->
+        <div class="mb-3">
+          <label for="phone" class="form-label text-light">Teléfono</label>
+          <input type="tel" class="form-control" id="phone" v-model="phone" required />
+          <span v-if="errors.phone" class="text-danger">{{ errors.phone }}</span>
+        </div>
+
+        <!-- Dirección -->
+        <div class="mb-3">
+          <label for="address" class="form-label text-light">Dirección</label>
+          <input type="text" class="form-control" id="address" v-model="address" required />
+          <span v-if="errors.address" class="text-danger">{{ errors.address }}</span>
+        </div>
+
         <button type="submit" class="btn btn-outline-light w-100">Registrar</button>
       </form>
       <p class="text-center text-light mt-3">
@@ -50,11 +72,15 @@ export default {
       email: '',
       password: '',
       confirmPassword: '',
+      phone: '',
+      address: '',
       errors: {
         name: '',
         email: '',
         password: '',
         confirmPassword: '',
+        phone: '',
+        address: '',
       },
     }
   },
@@ -66,6 +92,8 @@ export default {
         email: '',
         password: '',
         confirmPassword: '',
+        phone: '',
+        address: '',
       }
 
       // Validación de campos
@@ -85,6 +113,15 @@ export default {
         this.errors.password = 'La contraseña debe tener al menos 6 caracteres.'
       }
 
+      const phonePattern = /^[0-9]{10}$/ // Validación de teléfono (10 dígitos)
+      if (!phonePattern.test(this.phone)) {
+        this.errors.phone = 'Por favor, ingresa un número de teléfono válido (10 dígitos).'
+      }
+
+      if (!this.address) {
+        this.errors.address = 'La dirección es obligatoria.'
+      }
+
       // Si hay errores, no proceder
       if (Object.values(this.errors).some((error) => error !== '')) {
         return
@@ -94,6 +131,8 @@ export default {
         name: this.name,
         email: this.email,
         password: this.password,
+        phone: this.phone,
+        address: this.address,
       }
 
       try {

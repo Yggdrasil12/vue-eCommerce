@@ -27,9 +27,6 @@
             <button class="btn btn-outline-warning mx-2" @click="editProduct(product)">
               <i class="bi bi-pencil"></i>
             </button>
-            <button class="btn btn-outline-success mx-2" @click="addToCart(product)">
-              <i class="bi bi-cart-plus"></i>
-            </button>
           </td>
         </tr>
         <tr v-if="products.length === 0">
@@ -98,10 +95,6 @@ export default {
     },
     editProduct(product) {
       this.$router.push({ name: 'edit-product', params: { id: product.id } })
-    },
-    addToCart(product) {
-      this.$emit('add-to-cart', product)
-      alert(`Producto ${product.name} agregado al carrito`)
     },
   },
 }
