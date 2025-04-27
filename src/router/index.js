@@ -1,6 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-// import ShowLogin from '../views/ShowLogin.vue'
+import Login from '../views/Authentication/Login.vue'
+import SignUp from '../views/Authentication/Signup.vue'
+import Products from '../views/Products/Products.vue'
+import Edit from '../views/Products/Edit.vue'
+import Detail from '../views/Products/Detail.vue'
+import Profile from '../views/Profile/Profile.vue'
+import EditProfile from '../views/Profile/EditProfile.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -10,35 +16,43 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
     },
-    {
-      path: '/products',
-      name: 'products',
-      component: () => import('../views/Products.vue'),
-    },
+    // Authentication
     {
       path: '/login',
       name: 'login',
-      component: () => import('../views/Login.vue'),
+      component: Login,
     },
     {
       path: '/signup',
       name: 'signup',
-      component: () => import('../views/Signup.vue'),
+      component: SignUp,
+    },
+    // Products
+    {
+      path: '/products',
+      name: 'products',
+      component: Products,
     },
     {
-      path: '/cart',
-      name: 'cart',
-      component: () => import('../views/Cart.vue'),
-    },
-    {
-      path: '/edit/:id',
+      path: '/product/edit/:id',
       name: 'edit',
-      component: () => import('../views/Edit.vue'),
+      component: Edit,
     },
     {
-      path: '/details/:id',
+      path: '/product/detail/:id',
       name: 'details',
-      component: () => import('../views/Detail.vue'),
+      component: Detail,
+    },
+    // Profile
+    {
+      path: '/profile',
+      name: 'profile',
+      component: Profile,
+    },
+    {
+      path: '/profile/edit',
+      name: 'editProfile',
+      component: EditProfile,
     },
   ],
 })
