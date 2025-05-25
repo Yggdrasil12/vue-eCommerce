@@ -5,8 +5,10 @@ import SignUp from '../views/Authentication/Signup.vue'
 import Products from '../views/Products/Products.vue'
 import Edit from '../views/Products/Edit.vue'
 import Detail from '../views/Products/Detail.vue'
+import Create from '../views/Products/Create.vue'
 import Profile from '../views/Profile/Profile.vue'
 import EditProfile from '../views/Profile/EditProfile.vue'
+import Users from '../views/Users/Users.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,6 +45,11 @@ const router = createRouter({
       name: 'details',
       component: Detail,
     },
+    {
+      path: '/product/create',
+      name: 'create',
+      component: Create,
+    },
     // Profile
     {
       path: '/profile',
@@ -53,6 +60,12 @@ const router = createRouter({
       path: '/profile/edit',
       name: 'editProfile',
       component: EditProfile,
+    },
+    // Users
+    {
+      path: '/users',
+      name: 'users',
+      component: Users,
     },
   ],
 })

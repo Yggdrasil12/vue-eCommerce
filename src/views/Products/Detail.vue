@@ -1,60 +1,63 @@
 <template>
-  <div class="view-product-container">
-    <h2 class="text-center text-light mb-4">Detalles del Producto</h2>
+  <div class="background-wrapper">
+    <div class="view-product-container">
+      <!-- Todo tu contenido aquí (igual que antes) -->
+      <h2 class="text-center text-light mb-4">Detalles del Producto</h2>
 
-    <div class="product-details">
-      <div class="product-info">
-        <div v-if="!isEditing">
-          <h3 class="text-light">Nombre: {{ product.name }}</h3>
+      <div class="product-details">
+        <div class="product-info">
+          <div v-if="!isEditing">
+            <h3 class="text-light">Nombre: {{ product.name }}</h3>
 
-          <div class="info-row">
-            <span class="text-light fw-bold">Descripción:</span>
-            <span class="text-light">{{ product.description }}</span>
+            <div class="info-row">
+              <span class="text-light fw-bold">Descripción:</span>
+              <span class="text-light">{{ product.description }}</span>
+            </div>
+
+            <div class="info-row">
+              <span class="text-light fw-bold">Cantidad:</span>
+              <strong class="text-success">{{ product.quantity }}</strong>
+            </div>
           </div>
 
-          <div class="info-row">
-            <span class="text-light fw-bold">Cantidad:</span>
-            <strong class="text-success">{{ product.quantity }}</strong>
-          </div>
-        </div>
-
-        <div v-else>
-          <div class="mb-3">
-            <label class="form-label text-light">Nombre del Producto</label>
-            <input v-model="editableProduct.name" type="text" class="form-control" />
-          </div>
-          <div class="mb-3">
-            <label class="form-label text-light">Descripción</label>
-            <textarea
-              v-model="editableProduct.description"
-              class="form-control"
-              rows="3"
-            ></textarea>
-          </div>
-          <div class="mb-3">
-            <label class="form-label text-light">Cantidad</label>
-            <input
-              v-model.number="editableProduct.quantity"
-              type="number"
-              min="0"
-              class="form-control"
-            />
+          <div v-else>
+            <div class="mb-3">
+              <label class="form-label text-light">Nombre del Producto</label>
+              <input v-model="editableProduct.name" type="text" class="form-control" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-light">Descripción</label>
+              <textarea
+                v-model="editableProduct.description"
+                class="form-control"
+                rows="3"
+              ></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-light">Cantidad</label>
+              <input
+                v-model.number="editableProduct.quantity"
+                type="number"
+                min="0"
+                class="form-control"
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="actions">
-      <button v-if="!isEditing" class="btn btn-outline-warning w-100 mt-3" @click="startEditing">
-        Editar Producto
-      </button>
+      <div class="actions">
+        <button v-if="!isEditing" class="btn btn-outline-warning w-100 mt-3" @click="startEditing">
+          Editar Producto
+        </button>
 
-      <div v-else class="d-flex flex-column gap-2 mt-3">
-        <button class="btn btn-success w-100" @click="saveChanges">Guardar Cambios</button>
-        <button class="btn btn-secondary w-100" @click="cancelEditing">Cancelar</button>
+        <div v-else class="d-flex flex-column gap-2 mt-3">
+          <button class="btn btn-success w-100" @click="saveChanges">Guardar Cambios</button>
+          <button class="btn btn-secondary w-100" @click="cancelEditing">Cancelar</button>
+        </div>
+
+        <button class="btn btn-purple w-100 mt-3" @click="goBack">Regresar</button>
       </div>
-
-      <button class="btn btn-purple w-100 mt-3" @click="goBack">Regresar</button>
     </div>
   </div>
 </template>
@@ -136,14 +139,25 @@ export default {
 </script>
 
 <style scoped>
+.background-wrapper {
+  height: calc(100vh - 60px);
+  background: linear-gradient(135deg, #6a0dad, #000);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
 .view-product-container {
-  padding: 40px;
-  background: #000; /* Fondo negro */
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  max-width: 800px;
-  margin: 50px auto;
-  font-family: 'Arial', sans-serif;
+  background: #222; /* ejemplo de fondo oscuro para el modal */
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 600px; /* ancho máximo del modal */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  color: white;
 }
 
 h2 {

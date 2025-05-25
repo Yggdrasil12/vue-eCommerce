@@ -2,7 +2,24 @@
   <div class="products-table-container">
     <h2 class="text-center text-light mb-4">Lista de Productos</h2>
 
-    <!-- Alerta de stock bajo en rojo -->
+    <!-- Buscador -->
+    <div class="mb-4">
+      <input
+        type="text"
+        class="form-control custom-search"
+        placeholder="Buscar por nombre..."
+        v-model="searchTerm"
+      />
+    </div>
+
+    <!-- Botón para agregar productos -->
+    <div class="d-flex justify-content-end mb-3">
+      <button class="btn btn-success" @click="$router.push('/product/create')">
+        <i class="bi bi-plus-circle"></i> Agregar Producto
+      </button>
+    </div>
+
+    <!-- Alerta de stock bajo -->
     <div v-if="lowStockAlert" class="alert alert-danger alert-dismissible fade show" role="alert">
       <strong>Advertencia!</strong> Algunos productos tienen stock bajo (4 o menos unidades).
       <button
@@ -17,15 +34,16 @@
     <table class="table table-dark table-striped">
       <thead>
         <tr>
-          <th scope="col">#</th>
-          <th scope="col">Nombre</th>
-          <th scope="col">Cantidad</th>
-          <th scope="col">Descripción</th>
-          <th scope="col">Acciones</th>
+          <th>#</th>
+          <th>Nombre</th>
+          <th>Cantidad</th>
+          <th>Descripción</th>
+          <th>Estado</th>
+          <th>Acciones</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(product, index) in products" :key="product.id">
+        <tr v-for="(product, index) in filteredProducts" :key="product.id">
           <th scope="row">{{ index + 1 }}</th>
           <td>{{ product.name }}</td>
           <td>
@@ -34,6 +52,7 @@
             </span>
           </td>
           <td>{{ product.description }}</td>
+          <td>{{ product.state }}</td>
           <td>
             <button class="btn btn-outline-light mx-2" @click="viewDetails(product)">
               <i class="bi bi-eye"></i>
@@ -41,10 +60,13 @@
             <router-link :to="`/product/detail/${product.id}`" class="btn btn-outline-warning mx-2">
               <i class="bi bi-pencil"></i>
             </router-link>
+            <button class="btn btn-outline-danger mx-2" @click="deleteProduct(product)">
+              <i class="bi bi-trash"></i>
+            </button>
           </td>
         </tr>
-        <tr v-if="products.length === 0">
-          <td colspan="5" class="text-center text-light">No hay productos disponibles.</td>
+        <tr v-if="filteredProducts.length === 0">
+          <td colspan="5" class="text-center text-light">No hay productos coincidentes.</td>
         </tr>
       </tbody>
     </table>
@@ -86,11 +108,19 @@ export default {
     return {
       products: [],
       selectedProduct: null,
-      lowStockAlert: false, // Estado para mostrar la alerta de stock bajo
+      lowStockAlert: false,
+      searchTerm: '',
     }
   },
   mounted() {
     this.fetchProducts()
+  },
+  computed: {
+    filteredProducts() {
+      const term = this.searchTerm.trim().toLowerCase()
+      if (!term) return this.products
+      return this.products.filter((product) => product.name.toLowerCase().includes(term))
+    },
   },
   methods: {
     async fetchProducts() {
@@ -99,7 +129,6 @@ export default {
         const data = await response.json()
         this.products = data
 
-        // Revisar si hay productos con stock bajo (4 o menos)
         this.lowStockAlert = this.products.some((product) => product.quantity <= 4)
       } catch (error) {
         console.error('Error al obtener los productos:', error)
@@ -110,8 +139,31 @@ export default {
       const modal = new bootstrap.Modal(document.getElementById('viewDetailsModal'))
       modal.show()
     },
-    editProduct(product) {
-      this.$router.push({ name: 'edit-product', params: { id: product.id } })
+    async deleteProduct(product) {
+      try {
+        const confirmed = confirm(`¿Estás seguro de que deseas eliminar "${product.name}"?`)
+        if (!confirmed) return
+
+        const response = await fetch(`http://127.0.0.1:8000/api/products/${product.id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+
+        if (!response.ok) {
+          throw new Error('No se pudo eliminar el producto.')
+        }
+
+        this.products = this.products.filter((p) => p.id !== product.id)
+
+        this.lowStockAlert = this.products.some((product) => product.quantity <= 4)
+
+        alert('Producto eliminado correctamente.')
+      } catch (error) {
+        console.error('Error al eliminar el producto:', error)
+        alert('Hubo un error al eliminar el producto.')
+      }
     },
   },
 }
@@ -123,6 +175,30 @@ export default {
   background: linear-gradient(135deg, #6a0dad, #000);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
   min-height: 100vh;
+}
+
+.custom-search {
+  background-color: #1c1c1c;
+  color: #fff;
+  border: 1px solid #8a2be2;
+  border-radius: 8px;
+  padding: 10px 15px;
+  box-shadow: 0 0 8px rgba(138, 43, 226, 0.3);
+}
+
+.custom-search::placeholder {
+  color: #ccc;
+}
+
+.custom-search:focus {
+  outline: none;
+  border-color: #c084fc;
+  box-shadow: 0 0 12px rgba(192, 132, 252, 0.5);
+}
+
+.d-flex.justify-content-end {
+  /* margen extra opcional para separar botón */
+  margin-bottom: 1rem;
 }
 
 table {
